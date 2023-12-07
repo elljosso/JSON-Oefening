@@ -27,33 +27,78 @@ SaveToDisk();
 // Hier beginnen de opdrachten
 void SetGroupName()
 {
-    // TODO: vraag om een groepsnaam en wijs die toe aan de groep
+    Console.Write("Enter group name: ");
+    string groepsnaam = Console.ReadLine();
+    group.Name = groepsnaam;
 }
 
 void AddPerson()
 {
     Person person = new Person();
-    
-    // TODO: vraag naam, leeftijd, en hobbies en wijs die toe aan de persoon
+    Console.WriteLine("Geef naam, leeftijd en de hobbies: ");
+
+    person.Name = Console.ReadLine();
+
+    person.Age = int.Parse(Console.ReadLine());
+
+    string[] persoonhobbies = Console.ReadLine().Split(',');
+
+    person.Hobbys.AddRange(persoonhobbies);
+
 
     group.People.Add(person);
 }
 
 void ShowMembers()
 {
-    // TODO: toon de naam van de groep, en info over alle leden
+    Console.WriteLine($"Group Name: {group.Name}");
+
+    foreach (var person in group.People)
+    {
+        Console.WriteLine($"Name: {person.Name}, Age: {person.Age}, Hobbies: {string.Join(", ", person.Hobbys)}");
+    }
 }
 
 void SaveToDisk()
 {
     // TODO: gebruik de variabele filePath (hierboven gedeclareerd) 
     // om een JSON versie van de groep op te slaan. Voeg foutafhandeling toe.
+    try
+    {
+        string Json = group.Serialize();
+
+        File.WriteAllText(filePath, Json);
+
+        Console.WriteLine("Group data saved successfully.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error while saving data: {ex.Message}");
+    }
 }
 
 void LoadFromDisk()
 {
     // TODO: gebruik de variabele filePath (hierboven gedeclareerd) 
     // om een JSON versie van de groep te laden. Voeg foutafhandeling toe.
+    
+    try
+    {
+        if (File.Exists(filePath))
+        {
+            string json = File.ReadAllText(filePath);
+            group = Group.Deserialize(json);
+            Console.WriteLine("Date is geladen");
+        }
+    else
+        {
+            Console.WriteLine("Geen data gevonden. Start met lege groep");
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error laden van de data van de disk: {ex.Message}");
+    }
 }
 
 
